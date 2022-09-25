@@ -196,5 +196,53 @@ namespace NSwag.CodeGeneration.TypeScript.Tests
             Assert.DoesNotContain("FormData", code);
             Assert.Contains("\"Content-Type\": \"application/x-www-form-urlencoded\"", code);
         }
+
+        [Fact]
+        public async Task When_generateDtoTypes_is_false_then_code_generated_does_not_contain_class_Foo()
+        {
+            // Arrange
+            var generator = new WebApiOpenApiDocumentGenerator(new WebApiOpenApiDocumentGeneratorSettings());
+            var document = await generator.GenerateForControllerAsync<DiscussionController>();
+            var json = document.ToJson();
+
+            // Act
+            var codeGen = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings
+            {
+                Template = TypeScriptTemplate.Angular,
+                GenerateDtoTypes = false,
+                TypeScriptGeneratorSettings =
+                {
+                    TypeScriptVersion = 2.0m
+                }
+            });
+            var code = codeGen.GenerateFile();
+
+            // Assert
+            Assert.DoesNotContain("export class Foo", code);
+        }
+
+        [Fact]
+        public async Task When_generateDtoTypes_is_true_then_code_generated_contains_class_Foo()
+        {
+            // Arrange
+            var generator = new WebApiOpenApiDocumentGenerator(new WebApiOpenApiDocumentGeneratorSettings());
+            var document = await generator.GenerateForControllerAsync<DiscussionController>();
+            var json = document.ToJson();
+
+            // Act
+            var codeGen = new TypeScriptClientGenerator(document, new TypeScriptClientGeneratorSettings
+            {
+                Template = TypeScriptTemplate.Angular,
+                GenerateDtoTypes = true,
+                TypeScriptGeneratorSettings =
+                {
+                    TypeScriptVersion = 2.0m
+                }
+            });
+            var code = codeGen.GenerateFile();
+
+            // Assert
+            Assert.Contains("export class Foo", code);
+        }
     }
 }

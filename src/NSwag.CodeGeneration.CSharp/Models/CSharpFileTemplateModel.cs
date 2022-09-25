@@ -47,6 +47,11 @@ namespace NSwag.CodeGeneration.CSharp.Models
             _resolver = resolver;
             _clientCode = clientTypes.Concatenate();
 
+            dtoTypes =
+                settings.GenerateDtoTypes &&
+                (outputType == ClientGeneratorOutputType.Full ||
+                outputType == ClientGeneratorOutputType.Contracts) ? dtoTypes : Enumerable.Empty<CodeArtifact>();
+
             Classes = dtoTypes.Concatenate();
         }
 

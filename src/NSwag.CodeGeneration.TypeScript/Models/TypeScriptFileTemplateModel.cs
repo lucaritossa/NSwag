@@ -46,7 +46,10 @@ namespace NSwag.CodeGeneration.TypeScript.Models
             _clientCode = clientTypes.OrderByBaseDependency().Concatenate();
             _clientTypes = clientTypes;
 
-            Types = dtoTypes.OrderByBaseDependency().Concatenate();
+            Types = settings.GenerateDtoTypes ? dtoTypes.OrderByBaseDependency().Concatenate() : null;
+            
+            TypeNames = dtoTypes.Select(_ => _.TypeName).OrderBy(val => val).ToList();
+
             ExtensionCodeBottom = GenerateExtensionCodeAfter();
             Framework = new TypeScriptFrameworkModel(settings);
         }
@@ -56,6 +59,9 @@ namespace NSwag.CodeGeneration.TypeScript.Models
 
         /// <summary>Gets a value indicating whether to generate client classes.</summary>
         public bool GenerateClientClasses => _settings.GenerateClientClasses;
+
+        /// <summary>Gets a value indicating whether to generate DTO classes.</summary>
+        public bool GenerateDtoTypes => _settings.GenerateDtoTypes;
 
         /// <summary>Gets or sets a value indicating whether DTO exceptions are wrapped in a SwaggerException instance.</summary>
         public bool WrapDtoExceptions => _settings.WrapDtoExceptions;
@@ -99,6 +105,9 @@ namespace NSwag.CodeGeneration.TypeScript.Models
 
         /// <summary>Gets the types code.</summary>
         public string Types { get; }
+
+        /// <summary>Gets the type names of all DTO classes.</summary>
+        public IEnumerable<string> TypeNames { get; }
 
         /// <summary>Gets or sets the extension code imports.</summary>
         public string ExtensionCodeImport => _extensionCode.ImportCode;
