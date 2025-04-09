@@ -45,22 +45,21 @@ jobs:
       - uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.*
-      #- name: Cache .nuke/temp, ~/.nuget/packages
-      #  uses: actions/cache@v2
-      #  with:
-      #    path: |
-      #      .nuke/temp
-      #      ~/.nuget/packages
-      #    key: ${{ runner.os }}-${{ hashFiles('global.json', 'src/**/*.csproj', 'src/**/package.json') }}
-      - name: Run './build.cmd InstallDependencies Compile Test Pack'
-        run: ./build.cmd InstallDependencies Compile Test Pack
-        #env:
-          #NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
-          #MYGET_API_KEY: ${{ secrets.MYGET_API_KEY }}
-          #CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
-          #NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-      - name: 'Publish: NuGet Packages'
-        uses: actions/upload-artifact@v4
+      - name: Cache .nuke/temp, ~/.nuget/packages
+        uses: actions/cache@v2
         with:
-          name: NuGet Packages
-          path: artifacts/*.nupkg
+          path: |
+            .nuke/temp
+            ~/.nuget/packages
+          key: ${{ runner.os }}-${{ hashFiles('global.json', 'src/**/*.csproj', 'src/**/package.json') }}
+      - name: Run './build.cmd InstallDependencies Compile Test Pack Publish'
+        run: ./build.cmd InstallDependencies Compile Test Pack Publish
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+          MYGET_API_KEY: ${{ secrets.MYGET_API_KEY }}
+          CHOCO_API_KEY: ${{ secrets.CHOCO_API_KEY }}
+          NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - uses: actions/upload-artifact@v1
+        with:
+          name: artifacts
+          path: artifacts
