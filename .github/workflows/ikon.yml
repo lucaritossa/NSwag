@@ -2,8 +2,13 @@ name: ikon
 
 on:
   push:
+    branches:
+      - develop
     tags:
-      - 'v*.*.*-ikon*'
+      - 'v*.*.*'
+    paths:
+      - '**/*.*'
+      - '!**/*.md'
 
 jobs:
   windows-2022:
